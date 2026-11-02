@@ -1,0 +1,38 @@
+{# Severity / status are shown as text labels; colour is only a secondary cue. #}
+{% macro severity_badge(sev) -%}
+  <span class="badge sev-{{ sev }}">{{ sev }}</span>
+{%- endmacro %}
+
+{% macro status_badge(status) -%}
+  <span class="badge status-{{ status }}">{{ status }}</span>
+{%- endmacro %}
+
+{% macro status_form(alert, return_to) -%}
+  <form class="inline" method="post" action="{{ url_for('update_status', alert_id=alert['id']) }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <input type="hidden" name="return_to" value="{{ return_to }}">
+    <label class="visually-hidden" for="status-{{ alert['id'] }}-{{ return_to }}">Status</label>
+    <select id="status-{{ alert['id'] }}-{{ return_to }}" name="status">
+      {% for s in statuses %}
+        <option value="{{ s }}" {% if s == alert['status'] %}selected{% endif %}>{{ s }}</option>
+      {% endfor %}
+    </select>
+    <button type="submit">Set</button>
+  </form>
+{%- endmacro %}
+
+{% macro event_summary(e) -%}
+  {%- if e.event_type == 'http_request' -%}
+    {{ e.details.get('method', '') }} {{ e.details.get('url_decoded', '') }} → {{ e.details.get('status', '') }}
+  {%- elif e.event_type == 'sudo' -%}
+    as {{ e.details.get('target_user', '?') }}: {{ e.details.get('command', '') }}
+  {%- elif e.details.get('message') -%}
+    {{ e.details.get('message') }}
+  {%- endif -%}
+{%- endmacro %}
+
+{% macro mitre_link(t) -%}
+  {#- ATT&CK URLs use "/" for sub-techniques: T1110.001 -> T1110/001 -#}
+  <a href="https://attack.mitre.org/techniques/{{ t.get('id', '')|replace('.', '/') }}/" rel="noopener noreferrer">{{ t.get('id', '') }}</a>
+  {{ t.get('name', '') }}{% if t.get('tactic') %} <span class="muted">({{ t.get('tactic') }})</span>{% endif %}
+{%- endmacro %}

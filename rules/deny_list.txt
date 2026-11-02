@@ -1,0 +1,6 @@
+# Local IP deny-list used by denylist_login.yml
+# One IP address or CIDR range per line. '#' starts a comment.
+# These are RFC 5737 documentation addresses, not real infrastructure.
+192.0.2.10
+192.0.2.64/28
+203.0.113.200

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% from "_macros.html" import severity_badge, mitre_link with context %}
+{% block title %}Rules{% endblock %}
+{% block content %}
+<h1>Detection rules</h1>
+{% if error %}<p class="error">Could not load rules: {{ error }}</p>{% endif %}
+<table>
+  <thead><tr><th>ID</th><th>Name</th><th>Type</th><th>Severity</th><th>Logic</th><th>MITRE ATT&amp;CK</th></tr></thead>
+  <tbody>
+  {% for r in rules %}
+    <tr>
+      <td><code>{{ r.id }}</code></td>
+      <td><strong>{{ r.name }}</strong><div class="muted small">{{ r.description }}</div></td>
+      <td>{{ r.type }}</td>
+      <td>{{ severity_badge(r.severity) }}</td>
+      <td class="small">
+        {% if r.type == 'threshold' %}
+          ≥ {{ r.threshold }} {% if r.distinct %}distinct {{ r.distinct }}{% else %}events{% endif %} per {{ r.group_by }} in {{ r.window_seconds }}s
+        {% elif r.type == 'sequence' %}
+          ≥ {{ r.first_count }} "first" then a "then" event per {{ r.group_by }} within {{ r.window_seconds }}s
+        {% else %}
+          single matching event
+        {% endif %}
+      </td>
+      <td><ul class="plain">{% for t in r.mitre %}<li>{{ mitre_link(t) }}</li>{% endfor %}</ul></td>
+    </tr>
+  {% else %}
+    <tr><td colspan="6" class="muted">No rules loaded.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

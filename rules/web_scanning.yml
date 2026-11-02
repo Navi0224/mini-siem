@@ -1,0 +1,19 @@
+id: web_scanning
+name: Web content scanning
+description: >
+  Lots of 404 (Not Found) responses for one client in a short time: a tool is
+  guessing paths such as /admin, /.env or /wp-login.php. Benign clients rarely
+  hit more than a couple of missing pages.
+severity: medium
+type: threshold
+filter:
+  event_type: http_request
+  details.status: 404
+group_by: source_ip
+threshold: 10
+window_seconds: 60
+message: "{count} HTTP 404 responses to {group} (rule: {threshold}+ in {window_seconds}s); latest: {url}"
+mitre:
+  - id: T1595.003
+    name: "Active Scanning: Wordlist Scanning"
+    tactic: Reconnaissance

@@ -1,0 +1,19 @@
+id: web_xss
+name: Cross-site scripting (XSS) attempt in URL
+description: >
+  Script tags, javascript: URLs or inline event handlers in the decoded URL.
+  ATT&CK has no exact technique for reflected XSS; T1189 (Drive-by Compromise)
+  is the closest fit because XSS is usually used to attack the site's visitors.
+severity: medium
+type: match
+filter:
+  event_type: http_request
+  details.url_decoded:
+    regex: "(<\\s*script|javascript\\s*:|\\bon(error|load|mouseover)\\s*=|<\\s*svg|<\\s*img[^>]*\\bsrc\\s*=|document\\.cookie)"
+group_by: source_ip
+suppress_seconds: 300
+message: "Possible XSS from {source_ip} ({count} requests); latest: {method} {url_decoded} -> HTTP {status}"
+mitre:
+  - id: T1189
+    name: Drive-by Compromise
+    tactic: Initial Access

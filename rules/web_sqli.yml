@@ -1,0 +1,20 @@
+id: web_sqli
+name: SQL injection attempt in URL
+description: >
+  Common SQL injection fragments in the decoded URL (tautologies like
+  ' OR '1'='1, UNION SELECT, time-based SLEEP(), stacked DROP TABLE).
+  Pattern matching is noisy and easy to evade; a WAF or the application's own
+  logs are better sources. It is still a cheap, useful signal.
+severity: high
+type: match
+filter:
+  event_type: http_request
+  details.url_decoded:
+    regex: "(union(\\s|/\\*.*?\\*/)+(all\\s+)?select|'\\s*or\\s*'?\\d+'?\\s*=\\s*'?\\d+|\\bor\\s+1\\s*=\\s*1\\b|sleep\\s*\\(\\s*\\d+\\s*\\)|benchmark\\s*\\(|information_schema|;\\s*drop\\s+table|'\\s*--)"
+group_by: source_ip
+suppress_seconds: 300
+message: "Possible SQL injection from {source_ip} ({count} requests); latest: {method} {url_decoded} -> HTTP {status}"
+mitre:
+  - id: T1190
+    name: Exploit Public-Facing Application
+    tactic: Initial Access

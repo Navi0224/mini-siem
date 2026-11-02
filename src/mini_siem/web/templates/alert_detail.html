@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% from "_macros.html" import severity_badge, status_badge, status_form, event_summary, mitre_link with context %}
+{% block title %}Alert #{{ alert['id'] }}{% endblock %}
+{% block content %}
+<p><a href="{{ url_for('alerts') }}">← All alerts</a></p>
+<h1>Alert #{{ alert['id'] }}: {{ alert['rule_name'] }}</h1>
+
+<section class="card">
+  <dl class="facts">
+    <dt>Severity</dt><dd>{{ severity_badge(alert['severity']) }}</dd>
+    <dt>Status</dt><dd>{{ status_badge(alert['status']) }} {{ status_form(alert, 'detail') }}</dd>
+    <dt>Message</dt><dd class="wrap">{{ alert['message'] }}</dd>
+    <dt>Grouped by</dt><dd><code>{{ alert['group_key'] or '-' }}</code></dd>
+    <dt>First seen</dt><dd>{{ alert['first_seen'] }}</dd>
+    <dt>Last seen</dt><dd>{{ alert['last_seen'] }}</dd>
+    <dt>Rule</dt><dd><code>{{ alert['rule_id'] }}</code></dd>
+    <dt>MITRE ATT&amp;CK</dt>
+    <dd>
+      <ul class="plain">{% for t in mitre %}<li>{{ mitre_link(t) }}</li>{% endfor %}</ul>
+    </dd>
+  </dl>
+</section>
+
+<section class="card">
+  <h2>Evidence ({{ events|length }} event{{ '' if events|length == 1 else 's' }})</h2>
+  <table>
+    <thead><tr><th>Time</th><th>Type</th><th>Outcome</th><th>Source IP</th><th>User</th><th>Detail</th></tr></thead>
+    <tbody>
+    {% for e in events %}
+      <tr>
+        <td class="nowrap">{{ e.timestamp_str }}</td>
+        <td>{{ e.event_type }}</td>
+        <td><span class="outcome-{{ e.outcome }}">{{ e.outcome }}</span></td>
+        <td>{% if e.source_ip %}<a href="{{ url_for('events', ip=e.source_ip) }}"><code>{{ e.source_ip }}</code></a>{% else %}-{% endif %}</td>
+        <td>{% if e.user %}<a href="{{ url_for('events', user=e.user) }}">{{ e.user }}</a>{% else %}-{% endif %}</td>
+        <td class="wrap">{{ event_summary(e) }}</td>
+      </tr>
+      <tr class="raw-row"><td colspan="6"><code class="raw">{{ e.raw }}</code></td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}

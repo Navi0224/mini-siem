@@ -1,0 +1,27 @@
+{#- Autoescaping is on for every .html template: any {{ value }} is HTML-escaped.
+    Never add |safe to log-derived data -- it would re-open XSS. -#}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}mini-siem{% endblock %} · mini-siem</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="{{ url_for('overview') }}">mini-siem</a>
+    <nav>
+      {% set ep = request.endpoint %}
+      <a href="{{ url_for('overview') }}" {% if ep == 'overview' %}aria-current="page"{% endif %}>Overview</a>
+      <a href="{{ url_for('alerts') }}" {% if ep in ('alerts', 'alert_detail') %}aria-current="page"{% endif %}>Alerts</a>
+      <a href="{{ url_for('events') }}" {% if ep == 'events' %}aria-current="page"{% endif %}>Events</a>
+      <a href="{{ url_for('rules') }}" {% if ep == 'rules' %}aria-current="page"{% endif %}>Rules</a>
+    </nav>
+  </header>
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+  <footer>All times are UTC. Local dashboard, no authentication: keep it bound to 127.0.0.1.</footer>
+</body>
+</html>

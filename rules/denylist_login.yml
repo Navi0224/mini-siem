@@ -1,0 +1,19 @@
+id: denylist_login
+name: Successful login from deny-listed IP
+description: >
+  A successful login (SSH or application) from an IP/range in the local
+  deny_list.txt -- e.g. known-bad infrastructure from a threat-intel report.
+  The list is a local file; nothing is downloaded.
+severity: critical
+type: match
+filter:
+  event_type:
+    in: [ssh_login, app_login]
+  outcome: success
+  source_ip:
+    in_ip_list: deny_list.txt
+message: "Successful {event_type} as '{user}' from deny-listed IP {source_ip}"
+mitre:
+  - id: T1078
+    name: Valid Accounts
+    tactic: Initial Access

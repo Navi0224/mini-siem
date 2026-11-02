@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% from "_macros.html" import severity_badge with context %}
+{% block title %}Overview{% endblock %}
+{% block content %}
+<h1>Overview</h1>
+
+<section class="tiles">
+  <div class="tile"><div class="tile-label">Events stored</div><div class="tile-value">{{ stats.events_total }}</div></div>
+  <div class="tile"><div class="tile-label">Failed events</div><div class="tile-value">{{ stats.failures }}</div></div>
+  <a class="tile" href="{{ url_for('alerts', status='open') }}"><div class="tile-label">Open alerts</div><div class="tile-value">{{ stats.alerts_open }}</div></a>
+  <div class="tile">
+    <div class="tile-label">Unclosed alerts by severity</div>
+    <ul class="sev-list">
+      {% for sev in severities|reverse %}
+        <li>{{ severity_badge(sev) }} <strong>{{ stats.alerts_by_severity.get(sev, 0) }}</strong></li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+
+<section class="card">
+  <h2>Events per hour</h2>
+  {% if chart %}
+    {#- Inline SVG drawn on the server: no JavaScript, works offline. Hover a bar for its value. -#}
+    <svg class="chart" viewBox="0 0 {{ chart.width }} {{ chart.height }}" role="img"
+         aria-label="Bar chart of events per hour">
+      {% for y, value in chart.y_ticks %}
+        <line class="grid" x1="{{ chart.left }}" x2="{{ chart.width }}" y1="{{ y }}" y2="{{ y }}"></line>
+        <text class="axis" x="{{ chart.left - 6 }}" y="{{ y + 4 }}" text-anchor="end">{{ value }}</text>
+      {% endfor %}
+      {% for bar in chart.bars %}
+        <g class="bar-group">
+          <title>{{ bar.label }}: {{ bar.count }} events</title>
+          {# Invisible full-height hit area so even tiny bars are easy to hover. #}
+          <rect class="hit" x="{{ bar.x }}" y="0" width="{{ bar.width }}" height="{{ chart.baseline }}"></rect>
+          {% if bar.count %}
+            <rect class="bar" x="{{ bar.x }}" y="{{ bar.y }}" width="{{ bar.width }}" height="{{ bar.height }}" rx="2"></rect>
+          {% endif %}
+        </g>
+      {% endfor %}
+      <line class="baseline" x1="{{ chart.left }}" x2="{{ chart.width }}" y1="{{ chart.baseline }}" y2="{{ chart.baseline }}"></line>
+      {% for x, label in chart.x_labels %}
+        <text class="axis" x="{{ x }}" y="{{ chart.height - 8 }}" text-anchor="middle">{{ label }}</text>
+      {% endfor %}
+    </svg>
+    <details>
+      <summary>Show as table</summary>
+      <table class="compact">
+        <thead><tr><th>Hour (UTC)</th><th class="num">Events</th></tr></thead>
+        <tbody>
+          {% for bar in chart.bars %}<tr><td>{{ bar.label }}</td><td class="num">{{ bar.count }}</td></tr>{% endfor %}
+        </tbody>
+      </table>
+    </details>
+  {% else %}
+    <p class="muted">No events yet. Try <code>mini-siem demo</code> or <code>mini-siem ingest FILE --type auth</code>.</p>
+  {% endif %}
+</section>
+
+<div class="columns">
+  <section class="card">
+    <h2>Latest open alerts</h2>
+    {% if recent_alerts %}
+      <table>
+        <thead><tr><th>Severity</th><th>Rule</th><th>Group</th></tr></thead>
+        <tbody>
+        {% for a in recent_alerts %}
+          <tr>
+            <td>{{ severity_badge(a['severity']) }}</td>
+            <td><a href="{{ url_for('alert_detail', alert_id=a['id']) }}">{{ a['rule_name'] }}</a></td>
+            <td><code>{{ a['group_key'] or '-' }}</code></td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    {% else %}<p class="muted">No open alerts.</p>{% endif %}
+  </section>
+
+  <section class="card">
+    <h2>Top source IPs</h2>
+    <table>
+      <thead><tr><th>IP</th><th class="num">Events</th><th class="num">Failures</th></tr></thead>
+      <tbody>
+      {% for row in stats.top_source_ips %}
+        <tr>
+          <td><a href="{{ url_for('events', ip=row['source_ip']) }}"><code>{{ row['source_ip'] }}</code></a></td>
+          <td class="num">{{ row['n'] }}</td><td class="num">{{ row['failures'] }}</td>
+        </tr>
+      {% else %}<tr><td colspan="3" class="muted">No data</td></tr>{% endfor %}
+      </tbody>
+    </table>
+  </section>
+
+  <section class="card">
+    <h2>Events by type</h2>
+    <table>
+      <thead><tr><th>Type</th><th class="num">Count</th></tr></thead>
+      <tbody>
+      {% for row in stats.events_by_type %}
+        <tr><td><a href="{{ url_for('events', type=row['event_type']) }}">{{ row['event_type'] }}</a></td><td class="num">{{ row['n'] }}</td></tr>
+      {% else %}<tr><td colspan="2" class="muted">No data</td></tr>{% endfor %}
+      </tbody>
+    </table>
+  </section>
+</div>
+{% endblock %}

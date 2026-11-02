@@ -1,0 +1,20 @@
+id: ssh_bruteforce
+name: SSH brute force
+description: >
+  Many failed SSH password attempts from one IP in a short time. Typical of
+  automated password guessing against an internet-facing server.
+  Tuning: raise the threshold if users with bad memory trigger it;
+  lower the window to catch only fast, scripted attacks.
+severity: high
+type: threshold
+filter:
+  event_type: ssh_login
+  outcome: failure
+group_by: source_ip
+threshold: 5
+window_seconds: 60
+message: "{count} failed SSH logins from {group} (rule: {threshold}+ in {window_seconds}s); last user tried: {user}"
+mitre:
+  - id: T1110.001
+    name: "Brute Force: Password Guessing"
+    tactic: Credential Access

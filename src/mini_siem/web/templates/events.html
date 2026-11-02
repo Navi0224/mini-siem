@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% from "_macros.html" import event_summary with context %}
+{% block title %}Events{% endblock %}
+{% block content %}
+<h1>Event search</h1>
+
+<form class="filters" method="get" action="{{ url_for('events') }}">
+  <label>Source IP <input name="ip" value="{{ query.source_ip or '' }}" placeholder="203.0.113.45"></label>
+  <label>User <input name="user" value="{{ query.user or '' }}" placeholder="root"></label>
+  <label>Type
+    <select name="type">
+      <option value="">any</option>
+      {% for t in event_types %}<option value="{{ t }}" {% if query.event_type == t %}selected{% endif %}>{{ t }}</option>{% endfor %}
+    </select>
+  </label>
+  <label>Text in raw line <input name="q" value="{{ query.text or '' }}" placeholder="etc/passwd"></label>
+  <button type="submit">Search</button>
+  <a href="{{ url_for('events') }}">Reset</a>
+</form>
+
+<p class="muted">{{ total }} matching event{{ '' if total == 1 else 's' }}{% if pages > 1 %} · page {{ page }} of {{ pages }}{% endif %}</p>
+<table>
+  <thead><tr><th>Time</th><th>Source</th><th>Type</th><th>Outcome</th><th>Source IP</th><th>User</th><th>Host</th><th>Detail</th></tr></thead>
+  <tbody>
+  {% for e in events %}
+    <tr>
+      <td class="nowrap">{{ e.timestamp_str }}</td>
+      <td>{{ e.source }}</td>
+      <td>{{ e.event_type }}</td>
+      <td><span class="outcome-{{ e.outcome }}">{{ e.outcome }}</span></td>
+      <td>{% if e.source_ip %}<a href="{{ url_for('events', ip=e.source_ip) }}"><code>{{ e.source_ip }}</code></a>{% else %}-{% endif %}</td>
+      <td>{% if e.user %}<a href="{{ url_for('events', user=e.user) }}">{{ e.user }}</a>{% else %}-{% endif %}</td>
+      <td>{{ e.host or '-' }}</td>
+      <td class="wrap">{{ event_summary(e) }}</td>
+    </tr>
+    <tr class="raw-row"><td colspan="8"><code class="raw">{{ e.raw }}</code></td></tr>
+  {% else %}
+    <tr><td colspan="8" class="muted">No events match.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+{% if pages > 1 %}
+<nav class="pager">
+  {% if page > 1 %}<a href="{{ url_for('events', ip=query.source_ip, user=query.user, type=query.event_type, q=query.text, page=page - 1) }}">← Newer</a>{% endif %}
+  {% if page < pages %}<a href="{{ url_for('events', ip=query.source_ip, user=query.user, type=query.event_type, q=query.text, page=page + 1) }}">Older →</a>{% endif %}
+</nav>
+{% endif %}
+{% endblock %}

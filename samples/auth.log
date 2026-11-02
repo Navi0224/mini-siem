@@ -1,0 +1,50 @@
+Oct 14 00:05:01 web01 CRON[2007]: pam_unix(cron:session): session opened for user root(uid=0) by (uid=0)
+Oct 14 00:05:02 web01 CRON[2014]: pam_unix(cron:session): session closed for user root
+Oct 14 01:10:12 web01 sshd[2021]: Accepted publickey for alice from 198.51.100.20 port 50122 ssh2: ED25519 SHA256:q3YyAbCdEfGhIjKlMnOpQrStUvWxYz0123456789abc
+Oct 14 01:10:12 web01 sshd[2028]: pam_unix(sshd:session): session opened for user alice(uid=1000) by (uid=0)
+Oct 14 01:12:40 web01 sudo:    alice : TTY=pts/0 ; PWD=/home/alice ; USER=root ; COMMAND=/usr/bin/systemctl restart nginx
+Oct 14 01:12:40 web01 sudo: pam_unix(sudo:session): session opened for user root(uid=0) by alice(uid=1000)
+Oct 14 02:30:05 web01 sshd[2049]: Failed password for carol from 198.51.100.22 port 51515 ssh2
+Oct 14 02:30:14 web01 sshd[2056]: Accepted password for carol from 198.51.100.22 port 51515 ssh2
+Oct 14 02:45:00 web01 sshd[2063]: Accepted publickey for opsadmin from 198.51.100.23 port 40100 ssh2: RSA SHA256:Zx9yW8vU7tS6rQ5pO4nM3lK2jI1hG0fEdCbA987654
+Oct 14 02:46:10 web01 sudo: opsadmin : TTY=pts/1 ; PWD=/home/opsadmin ; USER=root ; COMMAND=/usr/bin/apt-get update
+Oct 14 03:00:00 web01 systemd-logind[2077]: New session 42 of user carol.
+Oct 14 03:15:00 web01 sshd[2084]: Failed password for root from 203.0.113.45 port 41000 ssh2
+Oct 14 03:15:05 web01 sshd[2091]: Invalid user admin from 203.0.113.45 port 41001
+Oct 14 03:15:05 web01 sshd[2098]: Failed password for invalid user admin from 203.0.113.45 port 41001 ssh2
+Oct 14 03:15:10 web01 sshd[2105]: Failed password for root from 203.0.113.45 port 41002 ssh2
+Oct 14 03:15:15 web01 sshd[2112]: Invalid user admin from 203.0.113.45 port 41003
+Oct 14 03:15:15 web01 sshd[2119]: Failed password for invalid user admin from 203.0.113.45 port 41003 ssh2
+Oct 14 03:15:20 web01 sshd[2126]: Failed password for root from 203.0.113.45 port 41004 ssh2
+Oct 14 03:15:25 web01 sshd[2133]: Failed password for root from 203.0.113.45 port 41005 ssh2
+Oct 14 03:15:30 web01 sshd[2140]: Invalid user admin from 203.0.113.45 port 41006
+Oct 14 03:15:30 web01 sshd[2147]: Failed password for invalid user admin from 203.0.113.45 port 41006 ssh2
+Oct 14 03:15:35 web01 sshd[2154]: Failed password for root from 203.0.113.45 port 41007 ssh2
+Oct 14 03:15:41 web01 sshd[2161]: Connection closed by authenticating user root 203.0.113.45 port 41007 [preauth]
+Oct 14 04:20:00 web01 sshd[2168]: Failed password for deploy from 203.0.113.77 port 52000 ssh2
+Oct 14 04:20:10 web01 sshd[2175]: Failed password for deploy from 203.0.113.77 port 52001 ssh2
+Oct 14 04:20:20 web01 sshd[2182]: Failed password for deploy from 203.0.113.77 port 52002 ssh2
+Oct 14 04:20:30 web01 sshd[2189]: Failed password for deploy from 203.0.113.77 port 52003 ssh2
+Oct 14 04:20:40 web01 sshd[2196]: Failed password for deploy from 203.0.113.77 port 52004 ssh2
+Oct 14 04:20:50 web01 sshd[2203]: Failed password for deploy from 203.0.113.77 port 52005 ssh2
+Oct 14 04:21:05 web01 sshd[2210]: Accepted password for deploy from 203.0.113.77 port 52010 ssh2
+Oct 14 05:00:00 web01 sshd[2217]: Invalid user admin from 203.0.113.88 port 60000
+Oct 14 05:00:00 web01 sshd[2224]: Failed password for invalid user admin from 203.0.113.88 port 60000 ssh2
+Oct 14 05:00:45 web01 sshd[2231]: Invalid user test from 203.0.113.88 port 60001
+Oct 14 05:00:45 web01 sshd[2238]: Failed password for invalid user test from 203.0.113.88 port 60001 ssh2
+Oct 14 05:01:30 web01 sshd[2245]: Invalid user oracle from 203.0.113.88 port 60002
+Oct 14 05:01:30 web01 sshd[2252]: Failed password for invalid user oracle from 203.0.113.88 port 60002 ssh2
+Oct 14 05:02:15 web01 sshd[2259]: Invalid user postgres from 203.0.113.88 port 60003
+Oct 14 05:02:15 web01 sshd[2266]: Failed password for invalid user postgres from 203.0.113.88 port 60003 ssh2
+Oct 14 05:03:00 web01 sshd[2273]: Invalid user ubuntu from 203.0.113.88 port 60004
+Oct 14 05:03:00 web01 sshd[2280]: Failed password for invalid user ubuntu from 203.0.113.88 port 60004 ssh2
+Oct 14 05:03:45 web01 sshd[2287]: Invalid user guest from 203.0.113.88 port 60005
+Oct 14 05:03:45 web01 sshd[2294]: Failed password for invalid user guest from 203.0.113.88 port 60005 ssh2
+Oct 14 05:04:30 web01 sshd[2301]: Invalid user ftpuser from 203.0.113.88 port 60006
+Oct 14 05:04:30 web01 sshd[2308]: Failed password for invalid user ftpuser from 203.0.113.88 port 60006 ssh2
+Oct 14 06:30:00 web01 sshd[2315]: Accepted password for dave from 198.51.100.24 port 49222 ssh2
+Oct 14 06:31:15 web01 sudo:     dave : TTY=pts/2 ; PWD=/var/www ; USER=root ; COMMAND=/bin/cat /etc/shadow
+Oct 14 06:33:02 web01 sudo: www-data : user NOT in sudoers ; TTY=pts/3 ; PWD=/tmp ; USER=root ; COMMAND=/bin/bash
+Oct 14 07:05:00 web01 sshd[2336]: Accepted password for bob from 192.0.2.66 port 40022 ssh2
+Oct 14 08:00:30 web01 sshd[2343]: Accepted publickey for alice from 198.51.100.20 port 50300 ssh2: ED25519 SHA256:q3YyAbCdEfGhIjKlMnOpQrStUvWxYz0123456789abc
+Oct 14 08:02:00 web01 sudo:    alice : TTY=pts/0 ; PWD=/home/alice ; USER=root ; COMMAND=/usr/bin/tail -n 50 /var/log/nginx/error.log

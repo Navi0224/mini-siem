@@ -1,0 +1,21 @@
+id: web_path_traversal
+name: Path traversal attempt in URL
+description: >
+  "../" sequences or well-known sensitive file names in the decoded URL --
+  an attempt to read files outside the web root (e.g. /etc/passwd).
+severity: high
+type: match
+filter:
+  event_type: http_request
+  details.url_decoded:
+    regex: "(\\.\\./|\\.\\.\\\\|/etc/passwd|/etc/shadow|win\\.ini|boot\\.ini)"
+group_by: source_ip
+suppress_seconds: 300
+message: "Possible path traversal from {source_ip} ({count} requests); latest: {method} {url_decoded} -> HTTP {status}"
+mitre:
+  - id: T1190
+    name: Exploit Public-Facing Application
+    tactic: Initial Access
+  - id: T1083
+    name: File and Directory Discovery
+    tactic: Discovery

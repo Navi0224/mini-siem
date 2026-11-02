@@ -1,0 +1,27 @@
+id: ssh_bruteforce_success
+name: Brute force followed by successful login
+description: >
+  At least 5 failed SSH logins from an IP, followed by a successful login from
+  the SAME IP within 10 minutes. The brute force probably worked -- treat the
+  account as compromised until proven otherwise.
+severity: critical
+type: sequence
+group_by: source_ip
+window_seconds: 600
+first:
+  filter:
+    event_type: ssh_login
+    outcome: failure
+  min_count: 5
+then:
+  filter:
+    event_type: ssh_login
+    outcome: success
+message: "Successful SSH login as '{user}' from {group} after {count} failed attempts"
+mitre:
+  - id: T1110
+    name: Brute Force
+    tactic: Credential Access
+  - id: T1078
+    name: Valid Accounts
+    tactic: Initial Access

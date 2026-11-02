@@ -1,0 +1,20 @@
+id: sudo_unusual_user
+name: Sudo to root by unusual user
+description: >
+  A user who is NOT on the expected-admins list ran a command as root.
+  "Unusual" is defined by a simple allow-list here; real SIEMs learn a
+  per-user baseline (UEBA) instead. Keep this list in sync with your
+  real sysadmins, or it will cause false positives.
+severity: high
+type: match
+filter:
+  event_type: sudo
+  outcome: success
+  details.target_user: root
+  user:
+    not_in: [alice, opsadmin, ansible]
+message: "'{user}' ran a command as root on {host}: {command}"
+mitre:
+  - id: T1548.003
+    name: "Abuse Elevation Control Mechanism: Sudo and Sudo Caching"
+    tactic: Privilege Escalation
